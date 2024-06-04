@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agregar evento al calendario</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        text-align: center;
+    }
+    h1 {
+        margin-bottom: 20px;
+    }
+    .evento-details {
+        text-align: left;
+        margin-bottom: 20px;
+    }
+    .evento-details p {
+        margin: 5px 0;
+    }
+    #agregarEvento {
+        padding: 15px 30px;
+        font-size: 18px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    #agregarEvento:hover {
+        background-color: #45a049;
+    }
+</style>
+</head>
+<body>
+<h1>Agregar evento al calendario</h1>
+<div class="evento-details">
+    <p><strong>Título:</strong> Reunión importante</p>
+    <p><strong>Fecha y hora de inicio:</strong> 4 de junio de 2024, 10:00 AM</p>
+    <p><strong>Fecha y hora de finalización:</strong> 4 de junio de 2024, 12:00 PM</p>
+    <p><strong>Ubicación:</strong> Oficina principal</p>
+    <p><strong>Descripción:</strong> Reunión con el equipo de desarrollo</p>
+</div>
+<button id="agregarEvento">Agregar evento al calendario</button>
+
+<script>
+document.getElementById('agregarEvento').addEventListener('click', function() {
+    var plataforma = navigator.platform.toLowerCase();
+    if (/(iphone|ipad|ipod)/.test(plataforma)) {
+        alert('Para agregar este evento a su calendario, abra la aplicación Calendario y agregue el evento manualmente.');
+    } else if (plataforma.includes('mac') || plataforma.includes('win')) {
+        alert('Para suscribirse al evento, copie y pegue los detalles del evento en su aplicación de calendario.');
+    } else {
+        alert('No se pudo detectar la plataforma. Por favor, agregue el evento manualmente a su calendario.');
+    }
+});
+</script>
+</body>
+</html>
