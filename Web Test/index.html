@@ -34,32 +34,28 @@
 
 <script>
 document.getElementById('agregarEvento').addEventListener('click', function() {
-    var evento = {
-        titulo: 'Reunión importante',
-        fechaInicio: new Date('2024-06-04T10:00:00'),
-        fechaFin: new Date('2024-06-04T12:00:00'),
-        ubicacion: 'Oficina principal',
-        descripcion: 'Reunión con el equipo de desarrollo'
-    };
+    var titulo = 'Reunión importante';
+    var fechaInicio = new Date('2024-06-04T10:00:00');
+    var fechaFin = new Date('2024-06-04T12:00:00');
+    var ubicacion = 'Oficina principal';
+    var descripcion = 'Reunión con el equipo de desarrollo';
 
-    var contenidoICS = 'BEGIN:VCALENDAR\n' +
-                       'VERSION:2.0\n' +
-                       'BEGIN:VEVENT\n' +
-                       'SUMMARY:' + evento.titulo + '\n' +
-                       'DTSTART:' + evento.fechaInicio.toISOString().replace(/-|:|\.\d+/g, '') + '\n' +
-                       'DTEND:' + evento.fechaFin.toISOString().replace(/-|:|\.\d+/g, '') + '\n' +
-                       'LOCATION:' + evento.ubicacion + '\n' +
-                       'DESCRIPTION:' + evento.descripcion + '\n' +
-                       'END:VEVENT\n' +
-                       'END:VCALENDAR';
+    var fechaInicioISO = fechaInicio.toISOString().replace(/-|:|\.\d+/g, '');
+    var fechaFinISO = fechaFin.toISOString().replace(/-|:|\.\d+/g, '');
 
-    var blob = new Blob([contenidoICS], { type: 'text/calendar;charset=utf-8' });
-    var enlaceDescarga = document.createElement('a');
-    enlaceDescarga.href = window.URL.createObjectURL(blob);
-    enlaceDescarga.download = 'evento.ics';
-    document.body.appendChild(enlaceDescarga);
-    enlaceDescarga.click();
-    document.body.removeChild(enlaceDescarga);
+    var enlaceCalendario = 'data:text/calendar;charset=utf8,' +
+                           'BEGIN:VCALENDAR\n' +
+                           'VERSION:2.0\n' +
+                           'BEGIN:VEVENT\n' +
+                           'SUMMARY:' + encodeURIComponent(titulo) + '\n' +
+                           'DTSTART:' + fechaInicioISO + '\n' +
+                           'DTEND:' + fechaFinISO + '\n' +
+                           'LOCATION:' + encodeURIComponent(ubicacion) + '\n' +
+                           'DESCRIPTION:' + encodeURIComponent(descripcion) + '\n' +
+                           'END:VEVENT\n' +
+                           'END:VCALENDAR';
+
+    window.open(enlaceCalendario);
 });
 </script>
 </body>
