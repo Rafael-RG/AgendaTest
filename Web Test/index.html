@@ -43,7 +43,7 @@ document.getElementById('agregarEvento').addEventListener('click', function() {
     var fechaInicioISO = fechaInicio.toISOString().replace(/-|:|\.\d+/g, '');
     var fechaFinISO = fechaFin.toISOString().replace(/-|:|\.\d+/g, '');
 
-    var enlaceCalendario = 'webcal:///?v=1&title=' + encodeURIComponent(titulo) + '&st=' + fechaInicioISO + '&et=' + fechaFinISO + '&desc=' + encodeURIComponent(descripcion) + '&in_loc=' + encodeURIComponent(ubicacion);
+    var enlaceCalendario = 'webcal:///?v=1&title=' + encodeURIComponent(titulo) + '&start=' + fechaInicioISO + '&end=' + fechaFinISO + '&description=' + encodeURIComponent(descripcion) + '&location=' + encodeURIComponent(ubicacion);
 
     window.location.href = enlaceCalendario;
 });
