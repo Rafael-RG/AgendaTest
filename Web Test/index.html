@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agregar evento al calendario</title>
+<title>Agregar nuevo evento al calendario</title>
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -12,6 +12,9 @@
     }
     h1 {
         margin-bottom: 20px;
+    }
+    .evento-input {
+        margin-bottom: 10px;
     }
     #agregarEvento {
         padding: 15px 30px;
@@ -26,27 +29,60 @@
     #agregarEvento:hover {
         background-color: #45a049;
     }
+    #errorMensaje {
+        color: red;
+        margin-top: 10px;
+    }
 </style>
 </head>
 <body>
-<h1>Agregar evento al calendario</h1>
-<button id="agregarEvento">Agregar evento al calendario</button>
+<h1>Agregar nuevo evento al calendario</h1>
+<form id="formularioEvento">
+    <input type="text" class="evento-input" id="titulo" placeholder="Título del evento" required><br>
+    <input type="datetime-local" class="evento-input" id="fechaInicio" required><br>
+    <input type="datetime-local" class="evento-input" id="fechaFin" required><br>
+    <input type="text" class="evento-input" id="ubicacion" placeholder="Ubicación"><br>
+    <input type="text" class="evento-input" id="descripcion" placeholder="Descripción"><br>
+    <button type="submit" id="agregarEvento">Agregar evento al calendario</button>
+</form>
+<p id="errorMensaje"></p>
 
 <script>
-document.getElementById('agregarEvento').addEventListener('click', function() {
-    var titulo = 'Reunión importante';
-    var fechaInicio = new Date('2024-06-04T10:00:00');
-    var fechaFin = new Date('2024-06-04T12:00:00');
-    var ubicacion = 'Oficina principal';
-    var descripcion = 'Reunión con el equipo de desarrollo';
+document.getElementById('formularioEvento').addEventListener('submit', function(event) {
+    event.preventDefault(); // Evitar que se envíe el formulario
+    
+    var titulo = document.getElementById('titulo').value;
+    var fechaInicio = new Date(document.getElementById('fechaInicio').value.replace('T', ' ')); // Reemplazar 'T' por espacio
+    var fechaFin = new Date(document.getElementById('fechaFin').value.replace('T', ' '));
+    var ubicacion = document.getElementById('ubicacion').value;
+    var descripcion = document.getElementById('descripcion').value;
 
-    var fechaInicioISO = fechaInicio.toISOString().replace(/-|:|\.\d+/g, '');
-    var fechaFinISO = fechaFin.toISOString().replace(/-|:|\.\d+/g, '');
+    // Validar que la fecha de inicio sea anterior a la fecha de fin
+    if (fechaInicio >= fechaFin) {
+        mostrarError('La fecha de inicio debe ser anterior a la fecha de fin.');
+        return;
+    }
 
-    var enlaceCalendario = 'webcal:///?v=1&title=' + encodeURIComponent(titulo) + '&start=' + fechaInicioISO + '&end=' + fechaFinISO + '&description=' + encodeURIComponent(descripcion) + '&location=' + encodeURIComponent(ubicacion);
+    var enlaceCalendario = 'webcal:///?v=1&title=' + encodeURIComponent(titulo) + '&start=' + encodeURIComponent(fechaInicio.toISOString()) + '&end=' + encodeURIComponent(fechaFin.toISOString());
+    if (ubicacion) {
+        enlaceCalendario += '&location=' + encodeURIComponent(ubicacion);
+    }
+    if (descripcion) {
+        enlaceCalendario += '&description=' + encodeURIComponent(descripcion);
+    }
 
-    window.location.href = enlaceCalendario;
+    // Intentar abrir la URL en una nueva pestaña
+    var nuevaPestana = window.open(enlaceCalendario, '_blank');
+    if (!nuevaPestana || nuevaPestana.closed || typeof nuevaPestana.closed == 'undefined') {
+        // Si no se puede abrir la nueva pestaña, mostrar mensaje de error
+        mostrarError('Error: No se pudo abrir la aplicación de calendario.');
+    }
 });
+
+function mostrarError(mensaje) {
+    var errorMensajeElemento = document.getElementById('errorMensaje');
+    errorMensajeElemento.textContent = mensaje;
+}
 </script>
 </body>
 </html>
