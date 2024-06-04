@@ -43,19 +43,9 @@ document.getElementById('agregarEvento').addEventListener('click', function() {
     var fechaInicioISO = fechaInicio.toISOString().replace(/-|:|\.\d+/g, '');
     var fechaFinISO = fechaFin.toISOString().replace(/-|:|\.\d+/g, '');
 
-    var enlaceCalendario = 'data:text/calendar;charset=utf8,' +
-                           'BEGIN:VCALENDAR\n' +
-                           'VERSION:2.0\n' +
-                           'BEGIN:VEVENT\n' +
-                           'SUMMARY:' + encodeURIComponent(titulo) + '\n' +
-                           'DTSTART:' + fechaInicioISO + '\n' +
-                           'DTEND:' + fechaFinISO + '\n' +
-                           'LOCATION:' + encodeURIComponent(ubicacion) + '\n' +
-                           'DESCRIPTION:' + encodeURIComponent(descripcion) + '\n' +
-                           'END:VEVENT\n' +
-                           'END:VCALENDAR';
+    var enlaceCalendario = 'webcal:///?v=1&title=' + encodeURIComponent(titulo) + '&st=' + fechaInicioISO + '&et=' + fechaFinISO + '&desc=' + encodeURIComponent(descripcion) + '&in_loc=' + encodeURIComponent(ubicacion);
 
-    window.open(enlaceCalendario);
+    window.location.href = enlaceCalendario;
 });
 </script>
 </body>
