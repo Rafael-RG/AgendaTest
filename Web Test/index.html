@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agregar evento al calendario</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        text-align: center;
+    }
+    h1 {
+        margin-bottom: 20px;
+    }
+    #agregarEvento {
+        padding: 15px 30px;
+        font-size: 18px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    #agregarEvento:hover {
+        background-color: #45a049;
+    }
+</style>
+</head>
+<body>
+<h1>Agregar evento al calendario</h1>
+<button id="agregarEvento">Agregar evento al calendario</button>
+
+<script>
+document.getElementById('agregarEvento').addEventListener('click', function() {
+    var evento = {
+        titulo: 'Reunión importante',
+        fechaInicio: new Date('2024-06-05T10:00:00'),
+        fechaFin: new Date('2024-06-05T12:00:00'),
+        ubicacion: 'Oficina principal',
+        descripcion: 'Reunión con el equipo de desarrollo'
+    };
+
+    var fechaInicioISO = evento.fechaInicio.toISOString().replace(/-/g, '').replace(/:/g, '').slice(0, -5);
+    var fechaFinISO = evento.fechaFin.toISOString().replace(/-/g, '').replace(/:/g, '').slice(0, -5);
+
+    var plataforma = navigator.userAgent.toLowerCase();
+    if (/(iphone|ipad|ipod)/.test(plataforma)) {
+        window.location.href = 'calendario://add?title=' + encodeURIComponent(evento.titulo) + '&date=' + fechaInicioISO + '/' + fechaFinISO + '&location=' + encodeURIComponent(evento.ubicacion) + '&notes=' + encodeURIComponent(evento.descripcion);
+    } else if (/android/.test(plataforma)) {
+        window.location.href = 'content://com.android.calendar/time/' + evento.fechaInicio.getTime() + '&end=' + evento.fechaFin.getTime() + '&title=' + encodeURIComponent(evento.titulo) + '&description=' + encodeURIComponent(evento.descripcion) + '&eventLocation=' + encodeURIComponent(evento.ubicacion);
+    } else {
+        alert('No se pudo detectar la plataforma. Por favor, agregue el evento manualmente a su calendario.');
+    }
+});
+</script>
+</body>
+</html>
