@@ -3,86 +3,129 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agregar nuevo evento al calendario</title>
+<title>Agregar evento al calendario</title>
 <style>
     body {
         font-family: Arial, sans-serif;
-        margin: 20px;
-        text-align: center;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f2f2f2;
+    }
+    .container {
+        max-width: 400px;
+        width: 100%;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
     h1 {
         margin-bottom: 20px;
+        color: #333;
     }
     .evento-input {
-        margin-bottom: 10px;
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
     }
-    #agregarEvento {
-        padding: 15px 30px;
-        font-size: 18px;
+    .select-container {
+        position: relative;
+    }
+    .select-container select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url('data:image/svg+xml;utf8,<svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.293 7.293a1 1 0 011.414 0L10 9.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414zM10 13a1 1 0 100-2 1 1 0 000 2z"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 20px;
+        cursor: pointer;
+    }
+    button {
+        width: 100%;
+        padding: 15px;
         background-color: #4CAF50;
         color: white;
         border: none;
         border-radius: 5px;
+        font-size: 18px;
         cursor: pointer;
         transition: background-color 0.3s;
     }
-    #agregarEvento:hover {
+    button:hover {
         background-color: #45a049;
-    }
-    #errorMensaje {
-        color: red;
-        margin-top: 10px;
     }
 </style>
 </head>
 <body>
-<h1>Agregar nuevo evento al calendario</h1>
-<form id="formularioEvento">
-    <input type="text" class="evento-input" id="titulo" placeholder="Título del evento" required><br>
-    <input type="datetime-local" class="evento-input" id="fechaInicio" required><br>
-    <input type="datetime-local" class="evento-input" id="fechaFin" required><br>
-    <input type="text" class="evento-input" id="ubicacion" placeholder="Ubicación"><br>
-    <input type="text" class="evento-input" id="descripcion" placeholder="Descripción"><br>
-    <button type="submit" id="agregarEvento">Agregar evento al calendario</button>
-</form>
-<p id="errorMensaje"></p>
+<div class="container">
+    <h1>Agregar evento al calendario</h1>
+    <form id="formularioEvento">
+        <input type="text" class="evento-input" id="titulo" placeholder="Título del evento" required><br>
+        <input type="datetime-local" class="evento-input" id="fechaInicio" required><br>
+        <input type="datetime-local" class="evento-input" id="fechaFin" required><br>
+        <div class="select-container">
+            <select class="evento-input" id="zonaHoraria">
+                <option value="America/Mexico_City">Ciudad de México</option>
+                <option value="America/New_York">Nueva York</option>
+                <option value="Europe/London">Londres</option>
+                <!-- Agrega más opciones según necesites -->
+            </select>
+        </div>
+        <input type="text" class="evento-input" id="ubicacion" placeholder="Ubicación"><br>
+        <input type="text" class="evento-input" id="descripcion" placeholder="Descripción"><br>
+        <button type="submit" id="agregarEvento">Agregar evento al calendario</button>
+    </form>
+</div>
 
 <script>
 document.getElementById('formularioEvento').addEventListener('submit', function(event) {
     event.preventDefault(); // Evitar que se envíe el formulario
     
     var titulo = document.getElementById('titulo').value;
-    var fechaInicio = new Date(document.getElementById('fechaInicio').value.replace('T', ' ')); // Reemplazar 'T' por espacio
-    var fechaFin = new Date(document.getElementById('fechaFin').value.replace('T', ' '));
+    var fechaInicio = new Date(document.getElementById('fechaInicio').value);
+    var fechaFin = new Date(document.getElementById('fechaFin').value);
+    var zonaHoraria = document.getElementById('zonaHoraria').value;
     var ubicacion = document.getElementById('ubicacion').value;
     var descripcion = document.getElementById('descripcion').value;
 
-    // Validar que la fecha de inicio sea anterior a la fecha de fin
-    if (fechaInicio >= fechaFin) {
-        mostrarError('La fecha de inicio debe ser anterior a la fecha de fin.');
-        return;
-    }
+    // Ajustar fechas a la zona horaria seleccionada
+    fechaInicio.setTime(fechaInicio.getTime() + (fechaInicio.getTimezoneOffset() * 60000));
+    fechaFin.setTime(fechaFin.getTime() + (fechaFin.getTimezoneOffset() * 60000));
 
-    var enlaceCalendario = 'webcal:///?v=1&title=' + encodeURIComponent(titulo) + '&start=' + encodeURIComponent(fechaInicio.toISOString()) + '&end=' + encodeURIComponent(fechaFin.toISOString());
-    if (ubicacion) {
-        enlaceCalendario += '&location=' + encodeURIComponent(ubicacion);
-    }
-    if (descripcion) {
-        enlaceCalendario += '&description=' + encodeURIComponent(descripcion);
-    }
+    // Generar contenido del archivo .ics
+    var contenidoICS = "BEGIN:VCALENDAR\r\n";
+    contenidoICS += "VERSION:2.0\r\n";
+    contenidoICS += "BEGIN:VEVENT\r\n";
+    contenidoICS += "DTSTART;TZID=" + zonaHoraria + ":" + fechaInicio.toISOString().replace(/[-:]/g, '').slice(0, -5) + "\r\n";
+    contenidoICS += "DTEND;TZID=" + zonaHoraria + ":" + fechaFin.toISOString().replace(/[-:]/g, '').slice(0, -5) + "\r\n";
+    contenidoICS += "SUMMARY:" + titulo + "\r\n";
+    contenidoICS += "LOCATION:" + ubicacion + "\r\n";
+    contenidoICS += "DESCRIPTION:" + descripcion + "\r\n";
+    contenidoICS += "END:VEVENT\r\n";
+    contenidoICS += "END:VCALENDAR\r\n";
 
-    // Intentar abrir la URL en una nueva pestaña
-    var nuevaPestana = window.open(enlaceCalendario, '_blank');
-    if (!nuevaPestana || nuevaPestana.closed || typeof nuevaPestana.closed == 'undefined') {
-        // Si no se puede abrir la nueva pestaña, mostrar mensaje de error
-        mostrarError('Error: No se pudo abrir la aplicación de calendario.');
-    }
+    // Crear un enlace para descargar el archivo .ics
+    var enlace = document.createElement('a');
+    enlace.href = 'data:text/calendar;charset=utf8,' + encodeURIComponent(contenidoICS);
+    enlace.download = 'evento.ics';
+    enlace.click();
 });
-
-function mostrarError(mensaje) {
-    var errorMensajeElemento = document.getElementById('errorMensaje');
-    errorMensajeElemento.textContent = mensaje;
-}
 </script>
 </body>
 </html>
