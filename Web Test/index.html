@@ -28,13 +28,18 @@
         color: #333;
     }
     .evento-input {
-        width: 100%;
+        width: calc(100% - 22px);
         padding: 10px;
         margin-bottom: 15px;
         border: 1px solid #ccc;
         border-radius: 5px;
         box-sizing: border-box;
         font-size: 16px;
+    }
+    .evento-label {
+        font-size: 14px;
+        margin-bottom: 5px;
+        color: #666;
     }
     .select-container {
         position: relative;
@@ -76,10 +81,14 @@
 <div class="container">
     <h1>Agregar evento al calendario</h1>
     <form id="formularioEvento">
-        <input type="text" class="evento-input" id="titulo" placeholder="Título del evento" required><br>
+        <label for="titulo" class="evento-label">Título del evento</label>
+        <input type="text" class="evento-input" id="titulo" required><br>
+        <label for="fechaInicio" class="evento-label">Fecha y hora de inicio</label>
         <input type="datetime-local" class="evento-input" id="fechaInicio" required><br>
+        <label for="fechaFin" class="evento-label">Fecha y hora de fin</label>
         <input type="datetime-local" class="evento-input" id="fechaFin" required><br>
         <div class="select-container">
+            <label for="zonaHoraria" class="evento-label">Zona horaria</label>
             <select class="evento-input" id="zonaHoraria">
                 <option value="America/Mexico_City">Ciudad de México</option>
                 <option value="America/New_York">Nueva York</option>
@@ -87,8 +96,10 @@
                 <!-- Agrega más opciones según necesites -->
             </select>
         </div>
-        <input type="text" class="evento-input" id="ubicacion" placeholder="Ubicación"><br>
-        <input type="text" class="evento-input" id="descripcion" placeholder="Descripción"><br>
+        <label for="ubicacion" class="evento-label">Ubicación</label>
+        <input type="text" class="evento-input" id="ubicacion"><br>
+        <label for="descripcion" class="evento-label">Descripción</label>
+        <input type="text" class="evento-input" id="descripcion"><br>
         <button type="submit" id="agregarEvento">Agregar evento al calendario</button>
     </form>
 </div>
